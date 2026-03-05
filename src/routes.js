@@ -5,3 +5,5 @@ const routes = Router();
 routes.get("/", (req, res) => {
   res.render("home.handlebars");
 });
+
+module.exports = routes;

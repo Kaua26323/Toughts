@@ -1,17 +1,19 @@
 require("dotenv").config();
-const path = requere("path");
+const path = require("path");
 const conn = require("./db/conn");
 const express = require("express");
+const routes = require("./routes");
 const flash = require("express-flash");
 const session = require("express-session");
-const FileStore = require("session-file-store");
+const FileStore = require("session-file-store")(session);
 const { engine } = require("express-handlebars");
 const { getSession } = require("./middlewares/globalsMiddlewares");
 
-const homeRouter = require("./routes/home");
-
 const app = express();
 const port = process.env.PORT || 3000;
+
+const Tought = require("./models/Tought");
+const User = require("./models/User");
 
 app.use(
   session({
@@ -42,7 +44,7 @@ app.set("view engine", "handlebars");
 app.set("views", path.resolve("src/views"));
 
 app.use(getSession);
-app.use();
+app.use(routes);
 
 conn
   .sync()
