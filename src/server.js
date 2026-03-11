@@ -6,7 +6,11 @@ const flash = require("express-flash");
 const session = require("express-session");
 const FileStore = require("session-file-store")(session);
 const { engine } = require("express-handlebars");
-const { globalMiddleware } = require("./middlewares/globalsMiddlewares");
+const {
+  globalMiddleware,
+  notFoundHandler,
+  errorHandler,
+} = require("./middlewares/globalsMiddlewares");
 
 const homeRoute = require("./routes/home");
 const authRoutes = require("./routes/auth");
@@ -54,6 +58,10 @@ app.use(globalMiddleware);
 app.use(homeRoute);
 app.use(authRoutes);
 app.use(dashboardRoutes);
+
+// Errors
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 conn
   .sync()

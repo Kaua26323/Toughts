@@ -15,7 +15,10 @@ class LoginModel {
     if (this.errors.length > 0) return;
 
     try {
-      this.user = await User.findOne({ where: { email: this.body.email } });
+      this.user = await User.findOne({
+        where: { email: this.body.email },
+        attributes: ["id", "name", "email", "password"],
+      });
 
       if (!this.user) {
         this.errors.push("Email/password is invalid!");
@@ -32,12 +35,11 @@ class LoginModel {
         return;
       }
 
-      this.success.push("O login foi realizado com successo!");
+      this.success.push(`Welcome again ${this.user.name}!`);
     } catch (err) {
       this.errors.push(
         "Authentication service is currently unavailable. Please try again later.",
       );
-      console.error(err);
     }
   }
 

@@ -43,29 +43,23 @@ class DashboardController {
     }
   }
 
-  async getThought(req, res) {
+  async getThought(req, res, next) {
     if (!req.params.id) return res.status(400).send("Bad Request!");
     try {
       const thoughtId = req.params.id;
       const thought = await ThoughtManager.getThoughtById(thoughtId);
 
-      console.log("thought:", thought);
-
       if (!thought) {
-        req.flash("error", "Thought not found!");
-        return res.redirect("/dashboard");
+        const error = new Error("Thought not found!");
+        error.status = 404;
+        next(error);
       }
 
-      req.flash("success", "Update the thought!");
-      req.session.save(() => {
-        res.render("dashboard/edit.handlebars", {
-          thought: thought,
-        });
+      res.render("dashboard/edit.handlebars", {
+        thought: thought,
       });
     } catch (err) {
-      console.error("Critical Error:", err);
-      req.flash("error", err.message);
-      return res.redirect("/dashboard");
+      next(err);
     }
   }
 
@@ -89,7 +83,7 @@ class DashboardController {
     } catch (err) {
       console.error("Critical Error:", err);
       req.flash("error", err.message);
-      return res.redirect(`/dashboard/edit/${req.body.thoughtId}`);
+      return res.redirect(`/dashboard/edit-thought/${req.body.thoughtId}`);
     }
   }
 
@@ -101,17 +95,18 @@ class DashboardController {
         userId: req.session.user.id,
       };
 
-      const removeThought = await ThoughtManager.remove(data);
+      await ThoughtManager.remove(data);
 
       req.flash("success", "Thought was deleted successfully!");
-      console.log("removeThought:", removeThought);
       req.session.save(() => {
         res.redirect("/dashboard");
       });
     } catch (err) {
       console.error("Critical Error:", err);
       req.flash("error", err.message);
-      return res.redirect("/dashboard");
+      req.session.sava(() => {
+        return res.redirect("/dashboard");
+      });
     }
   }
 }

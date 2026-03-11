@@ -10,25 +10,20 @@ class AuthController {
     if (!req.body) return res.status(400).send("Bad Request");
 
     try {
-      console.log("Sended body:", req.body);
       const login = new LoginModel(req.body);
       await login.signIn();
-      console.log("Post body:", login.body);
 
       if (login.errors.length > 0) {
         req.flash("error", login.errors);
-        res.redirect("/login");
+        return res.redirect("/login");
       }
-
-      console.log("loginError:", login.errors);
-      console.log("user:", login.user);
 
       req.session.user = {
         id: login.user.id,
         name: login.user.name,
         email: login.user.email,
       };
-      console.log("USER!!", req.session.user);
+
       req.flash("success", login.success);
       req.session.save(() => {
         res.redirect("/");
@@ -52,15 +47,11 @@ class AuthController {
   async createUser(req, res) {
     if (!req.body) return res.status(400).send("Bad Request");
     try {
-      console.log("Body enviado:", req.body);
       const newUser = new RegisterModel(req.body);
       await newUser.register();
-      console.log("Body depois:", newUser.body);
 
       if (newUser.errors.length > 0) {
         req.flash("error", newUser.errors);
-        console.log("newUser.errors:", newUser.errors);
-        console.log("newUser.errors1:", newUser.errors[0]);
         return res.redirect("/register");
       }
 
@@ -70,7 +61,6 @@ class AuthController {
         email: newUser.user.email,
       };
 
-      console.log("USER!!", req.session.user);
       req.flash("success", newUser.success);
 
       return req.session.save(() => {
