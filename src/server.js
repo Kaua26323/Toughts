@@ -17,6 +17,7 @@ const authRoutes = require("./routes/auth");
 const dashboardRoutes = require("./routes/dashboard");
 
 const app = express();
+app.set("trust proxy", 1);
 const port = process.env.PORT || 3000;
 
 const Thought = require("./models/thoughtModels/ThoughtModel");
@@ -35,7 +36,8 @@ app.use(
     cookie: {
       secure: true,
       maxAge: 1000 * 60 * 60 * 24 * 7,
-      httpOnly: false,
+      httpOnly: true,
+      sameSite: "lax",
     },
   }),
 );
