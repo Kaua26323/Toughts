@@ -30,13 +30,12 @@ app.use(
     saveUninitialized: false,
     store: new FileStore({
       logFn: function () {},
-      //path: path.resolve(__dirname, "sessions"),
       path: path.join(require("os").tmpdir(), "sessions"),
     }),
     cookie: {
-      secure: false,
+      secure: true,
       maxAge: 1000 * 60 * 60 * 24 * 7,
-      httpOnly: true,
+      httpOnly: false,
     },
   }),
 );
