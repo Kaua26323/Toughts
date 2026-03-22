@@ -66,7 +66,7 @@ conn
   .sync()
   .then(() => {
     app.listen(port, () => {
-      console.log(`Server running in http://localhost:${port}`);
+      console.log(`Server running in port:${port}`);
     });
   })
   .catch((err) => console.error("!!!Error!!!:", err));
